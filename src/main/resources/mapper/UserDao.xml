@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.UserDao">
+
+    <resultMap type="com.example.demo.entity.User" id="UserMap">
+        <result property="userid" column="userId" jdbcType="INTEGER"/>
+        <result property="username" column="userName" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="usertype" column="userType" jdbcType="INTEGER"/>
+        <result property="roleid" column="roleId" jdbcType="INTEGER"/>
+        <result property="userdescription" column="userDescription" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select
+          userId, userName, password, userType, roleId, userDescription
+        from csa_web.user
+        where userId = #{userid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+          userId, userName, password, userType, roleId, userDescription
+        from csa_web.user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserMap">
+        select
+          userId, userName, password, userType, roleId, userDescription
+        from csa_web.user
+        <where>
+            <if test="userid != null">
+                and userId = #{userid}
+            </if>
+            <if test="username != null and username != ''">
+                and userName = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="usertype != null">
+                and userType = #{usertype}
+            </if>
+            <if test="roleid != null">
+                and roleId = #{roleid}
+            </if>
+            <if test="userdescription != null and userdescription != ''">
+                and userDescription = #{userdescription}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userid" useGeneratedKeys="true">
+        insert into csa_web.user(userName, password, userType, roleId, userDescription)
+        values (#{username}, #{password}, #{usertype}, #{roleid}, #{userdescription})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update csa_web.user
+        <set>
+            <if test="username != null and username != ''">
+                userName = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="usertype != null">
+                userType = #{usertype},
+            </if>
+            <if test="roleid != null">
+                roleId = #{roleid},
+            </if>
+            <if test="userdescription != null and userdescription != ''">
+                userDescription = #{userdescription},
+            </if>
+        </set>
+        where userId = #{userid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from csa_web.user where userId = #{userid}
+    </delete>
+
+</mapper>
